@@ -1,0 +1,17 @@
+{
+  "id": "dummyjson-est3",
+  "name": "Actividad 2 - DummyJSON",
+  "values": [
+    {
+      "key": "api_url",
+      "value": "https://dummyjson.com",
+      "enabled": true
+    },
+    {
+      "key": "token",
+      "value": "",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

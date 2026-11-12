@@ -1,0 +1,3 @@
+PENDIENTE DE EJECUCIÓN REAL
+Ejecuta pruebas.sh con la API Flask iniciada y guarda aquí la salida de curl.
+Este texto NO es un resultado de pruebas.

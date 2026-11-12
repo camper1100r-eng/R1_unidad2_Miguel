@@ -1,0 +1,496 @@
+{
+  "info": {
+    "name": "Inventario Estudiante 3 Flask",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "16 solicitudes; ejecución en orden con base limpia. Los tests de <800ms dependen de la máquina."
+  },
+  "item": [
+    {
+      "name": "Categorias",
+      "item": [
+        {
+          "name": "01 Crear categoría",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/categorias",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre\":\"Hardware\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });",
+                  "if (pm.response.code === 201) pm.environment.set(\"categoria_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 Listar categorías",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/categorias?page=1&per_page=5&sort=nombre"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 Consultar categoría",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/categorias/{{categoria_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 Actualizar categoría",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/categorias/{{categoria_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre\":\"Componentes\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "05 Crear producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/productos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre\":\"Teclado\",\"precio\":300,\"stock\":5,\"categoria_id\":{{categoria_id}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });",
+                  "if (pm.response.code === 201) pm.environment.set(\"producto_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "06 Listar filtrado y ordenado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/productos?categoria_id={{categoria_id}}&page=1&per_page=5&sort=-precio"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07 Consultar producto",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/productos/{{producto_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "08 Editar producto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/productos/{{producto_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre\":\"Teclado USB\",\"precio\":250,\"stock\":5,\"categoria_id\":{{categoria_id}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Regla de negocio",
+      "item": [
+        {
+          "name": "09 Salida válida",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/productos/{{producto_id}}/salidas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"cantidad\":2}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10 Salida con conflicto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/productos/{{producto_id}}/salidas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"cantidad\":999}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", function () { pm.response.to.have.status(409); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Casos negativos",
+      "item": [
+        {
+          "name": "11 Producto inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/productos/999999"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12 Precio inválido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/productos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre\":\"Error\",\"precio\":-3,\"stock\":3,\"categoria_id\":{{categoria_id}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "13 JSON mal formado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/productos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"nombre\":",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "14 Método no permitido",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/categorias/{{categoria_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 405\", function () { pm.response.to.have.status(405); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });",
+                  "pm.test(\"JSON valido\", function () { pm.response.to.be.json; pm.expect(() => pm.response.json()).not.to.throw(); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Limpieza",
+      "item": [
+        {
+          "name": "15 Borrar producto",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/productos/{{producto_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", function () { pm.response.to.have.status(204); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "16 Borrar categoría",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/categorias/{{categoria_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", function () { pm.response.to.have.status(204); });",
+                  "pm.test(\"Tiempo de respuesta menor a 800 ms\", function () { pm.expect(pm.response.responseTime).to.be.below(800); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,621 @@
+{
+  "info": {
+    "name": "Actividad 2 DummyJSON - plantilla de práctica",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "DummyJSON no garantiza todos los codigos 401/403/422. Para cubrir la rúbrica completa, adaptar a API del docente. La API simula escritura. Tiempo <800 ms no garantizado."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Autenticación",
+      "item": [
+        {
+          "name": "01 Iniciar sesión",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"emilys\",\"password\":\"emilyspass\",\"expiresInMins\":30}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "pm.test(\"Estado esperado 200\", () => pm.response.to.have.status(200));",
+                  "if(pm.response.code===200){ let d=pm.response.json(); pm.environment.set(\"token\", d.accessToken || d.token || \"\"); }",
+                  "pm.test(\"Token obtenido\", () => pm.expect(pm.environment.get(\"token\")).to.be.a(\"string\").and.not.empty);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 Consultar usuario actual autenticado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/auth/me",
+            "body": {
+              "mode": "raw",
+              "raw": 200,
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "CRUD",
+      "item": [
+        {
+          "name": "03 Listar productos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": 200,
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 Detalle producto",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/products/1",
+            "body": {
+              "mode": "raw",
+              "raw": 200,
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05 Buscar productos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/products/search?q=phone",
+            "body": {
+              "mode": "raw",
+              "raw": 200,
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "06 Paginación productos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/products?limit=5&skip=5",
+            "body": {
+              "mode": "raw",
+              "raw": 200,
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07 Crear producto simulado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/products/add",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Producto practica\",\"price\":22}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "pm.test(\"Estado esperado 201\", () => pm.response.to.have.status(201));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "08 Modificar producto simulado",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/products/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Producto actualizado\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "pm.test(\"Estado esperado 200\", () => pm.response.to.have.status(200));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "09 Eliminar producto simulado",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/products/1",
+            "body": {
+              "mode": "raw",
+              "raw": 200,
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10 Listar categorías",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/products/categories",
+            "body": {
+              "mode": "raw",
+              "raw": 200,
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Casos negativos",
+      "item": [
+        {
+          "name": "11 Producto inexistente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/products/999999",
+            "body": {
+              "mode": "raw",
+              "raw": 404,
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12 Login incorrecto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"inexistente_abc\",\"password\":\"incorrecta\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "pm.test(\"Estado esperado 400\", () => pm.response.to.have.status(400));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "13 Usuario inexistente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/users/999999",
+            "body": {
+              "mode": "raw",
+              "raw": 404,
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "14 Ruta inexistente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/ruta-no-existe",
+            "body": {
+              "mode": "raw",
+              "raw": 404,
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15 Búsqueda sin resultados",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/products/search?q=consulta_sin_resultados_123",
+            "body": {
+              "mode": "raw",
+              "raw": 200,
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "16 Solicitud sin datos de login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{api_url}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta recibida\", () => pm.expect(pm.response.code).to.be.oneOf([200,201,400,401,403,404,422]));",
+                  "pm.test(\"Respuesta en menos de 800 ms\", () => pm.expect(pm.response.responseTime).to.be.below(800));",
+                  "pm.test(\"Estado esperado 400\", () => pm.response.to.have.status(400));",
+                  "if(pm.response.code>=200 && pm.response.code<300) pm.test(\"JSON valido\", ()=>pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
